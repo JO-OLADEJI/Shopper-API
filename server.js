@@ -1,5 +1,6 @@
 const express = require('express');
 const { dbConnection } = require('./db/dbConnection.js');
+const productsRoute = require('./routes/product.js');
 const app = express();
 
 
@@ -8,6 +9,7 @@ app.use(express.json());
 
 
 app.get('/', (req, res) => res.send('Shopper Homepage'));
+app.use('/api/products', productsRoute);
 
 
 const port = process.env.PORT || 3001;
