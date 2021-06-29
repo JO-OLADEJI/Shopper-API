@@ -23,7 +23,7 @@ const ProductSchema = mongoose.Schema({
     required: true
   },
 
-  product_varieties: {
+  product_variety: {
     type: Array,
     required: true
   }
