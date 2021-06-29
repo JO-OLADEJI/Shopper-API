@@ -4,12 +4,11 @@ const { Product } = require('../models/product.js');
 class ProductController {
 
   allProducts = async (req, res) => {
-    // get all products from the db
     try {
       const productsList = await Product.find();
-      res.json({ 'success': true, 'result': productsList });
+      res.json({ 'success': true, 'response': productsList });
     }
-    catch(err) {
+    catch(error) {
       res.json({ 'success': false });
     }
   }
@@ -29,7 +28,14 @@ class ProductController {
   }
 
   deleteProduct = async (req, res) => {
-    // delete a product by id
+    const id = req.id;
+    try {
+      const dbResponse = await Product.deleteOne({ _id: id });
+      res.json({ 'success': true, 'response': dbResponse });
+    }
+    catch(error) {
+      res.json({ 'success': false });
+    }
   }
 
 }
