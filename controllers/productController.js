@@ -1,4 +1,5 @@
 const { Product } = require('../models/product.js');
+const { productValidation } = require('../middlewares/validation.js');
 
 
 class ProductController {
@@ -9,14 +10,31 @@ class ProductController {
       res.json({ 'success': true, 'response': productsList });
     }
     catch(error) {
-      res.json({ 'success': false });
+      res.json({ 'success': false, 'response': 'An error occured !' });
     }
   }
 
   createProduct = async (req, res) => {
-    // validate the product for errors
+    const { value, error } = productValidation(req.body);
+    if (error) {
+      return res.json({ 'success': false, 'response': error.details[0].message });
+    }
 
-    // create a new product from the model
+    const { product_name, product_description, date_uploaded, date_edited, product_variety } = value;
+    try {
+      const body = await new Product({
+        product_name,
+        product_description,
+        date_uploaded,
+        date_edited,
+        product_variety
+      });
+      const newProduct = await body.save();
+      res.json({ 'success': true, 'response': newProduct });
+    }
+    catch(error) {
+      res.json({ 'success': false, 'response': 'An error occured !' });
+    }
   }
 
   updateProduct = async (req, res) => {
@@ -34,7 +52,7 @@ class ProductController {
       res.json({ 'success': true, 'response': dbResponse });
     }
     catch(error) {
-      res.json({ 'success': false });
+      res.json({ 'success': false, 'response': 'An error occured !' });
     }
   }
 
