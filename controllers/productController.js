@@ -38,15 +38,33 @@ class ProductController {
   }
 
   updateProduct = async (req, res) => {
-    // validate the product
+    const { value, error } = productValidation(req.body);
+    if (error) {
+      return res.json({ 'success': false, 'response': error.details[0].message });
+    }
 
-    // update 'date_edited' field of the product
-
-    // update the product by id
+    const id = req.params.id;
+    const { product_name, product_description, date_uploaded, date_edited, product_variety } = value;
+    try {
+      const updateProduct = await Product.updateOne(
+        { _id: id },
+        { $set: {
+          product_name,
+          product_description,
+          date_uploaded,
+          date_edited: new Date(),
+          product_variety
+        }}
+      );
+      res.json({ 'success': true, 'response': updateProduct });
+    }
+    catch(error) {
+      res.json({ 'success': false, 'response': 'An error occured !' });
+    }
   }
 
   deleteProduct = async (req, res) => {
-    const id = req.id;
+    const id = req.params.id;
     try {
       const dbResponse = await Product.deleteOne({ _id: id });
       res.json({ 'success': true, 'response': dbResponse });
